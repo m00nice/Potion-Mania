@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61265c5fa5babd945838ae0c5f353767, type: 3}
+  m_Name: Teal ResourceObject
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 5075690108273954966, guid: c8f712aada10b374f8c29b213d500c12, type: 3}
+  sprite: {fileID: 21300000, guid: 9584730c80aabe641a139572112f50e7, type: 3}
+  itemName: Teal Resource
+  description: blah
