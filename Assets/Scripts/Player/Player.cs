@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using UnityEngine;
 
 public class Player : CharacterSuper
@@ -11,6 +12,9 @@ public class Player : CharacterSuper
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Transform orientation;
     [SerializeField] private Transform camera;
+    [SerializeField] private CinemachineFreeLook freeLook;
+    [SerializeField] private int freeLookXAxis;
+    [SerializeField] private int freeLookYAxis;
     [SerializeField] private LayerMask ground;
     [SerializeField] private float playerHeight;
     [SerializeField] private Animator animator;
@@ -53,12 +57,16 @@ public class Player : CharacterSuper
                 Inventory.Instance.OpenInventory();
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
+                freeLook.m_YAxis.m_MaxSpeed = 0;
+                freeLook.m_XAxis.m_MaxSpeed = 0;
             }
             else
             {
                 Inventory.Instance.CloseInventory();
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
+                freeLook.m_YAxis.m_MaxSpeed = freeLookYAxis;
+                freeLook.m_XAxis.m_MaxSpeed = freeLookXAxis;
             }
         }
 

@@ -9,7 +9,7 @@ public class ResourceObject : ScriptableObject
     [SerializeField] protected Sprite sprite;
     [SerializeField] protected string itemName;
     [SerializeField] protected string description;
-    protected int amount;
+    protected int amount = 100;
 
     public int Amount
     {

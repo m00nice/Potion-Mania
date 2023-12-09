@@ -15,13 +15,12 @@ public class ResourceSlot : MonoBehaviour
     public ResourceObject ResourceObject
     {
         get => resourceObject;
-        set => resourceObject = value;
     }
-
-    public TextMeshProUGUI AmountText
+    
+    public ResourceImage ResourceImage
     {
-        get => amountText;
-        set => amountText = value;
+        get => resourceImage;
+        set => resourceImage = value;
     }
 
     private void Start()
@@ -39,7 +38,19 @@ public class ResourceSlot : MonoBehaviour
                 resourceImage.Canvas = canvas;
                 resourceImage.ResourceSlotGetSet = this;
             }
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    public void AddToAmount(int value)
+    {
+        ResourceObject.Amount += value;
+        amountText.text = ResourceObject.Amount.ToString();
+    }
+    
+    public void SubFromAmount(int value)
+    {
+        ResourceObject.Amount -= value;
+        amountText.text = ResourceObject.Amount.ToString();
     }
 }

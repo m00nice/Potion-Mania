@@ -12,6 +12,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Button exitButton;
     [SerializeField] private ResourceSlot[] resourceSlots;
     [SerializeField] private ResourceObject[] resources;
+    [SerializeField] private CraftingSlot[] craftingSlots;
     [SerializeField] private CanvasGroup canvasGroup;
     private bool isActive = false;
 
@@ -44,8 +45,6 @@ public class Inventory : MonoBehaviour
         canvasGroup.blocksRaycasts = true;
         canvasGroup.interactable = true;
         SetInventory();
-        //Disable movement controls
-        //Disable camera controls
     }
     
     public void CloseInventory()
@@ -54,13 +53,17 @@ public class Inventory : MonoBehaviour
         canvasGroup.alpha = 0;
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
+        foreach (CraftingSlot craftingSlot in craftingSlots)
+        {
+            craftingSlot.ResetSlot();
+        }
     }
 
     private void SetInventory()
     {
         foreach (ResourceSlot resourceSlot in resourceSlots)
         {
-            resourceSlot.AmountText.text = resourceSlot.ResourceObject.Amount.ToString();
+            resourceSlot.AddToAmount(0);
         }
         
         

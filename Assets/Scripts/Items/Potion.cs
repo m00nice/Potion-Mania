@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,11 +16,12 @@ public enum PotionType
 }
 public class Potion : MonoBehaviour
 {
-    private float duration;
-    private PotionType potionType;
+    [SerializeField] private PotionType potionType;
+    [SerializeField] private float duration;
+    private bool isThrown = true;
     
 
-    public void UseEffect(GameObject target)
+    public void UseEffect(CharacterSuper target)
     {
         if (potionType == PotionType.Pacify)
         {
@@ -57,11 +59,28 @@ public class Potion : MonoBehaviour
         
     }
 
-    private IEnumerator SpeedBoost(GameObject target)
+    private IEnumerator SpeedBoost(CharacterSuper target)
     {
-        CharacterSuper targetCS = target.GetComponent<CharacterSuper>();
-        targetCS.MovementSpeed += 5;
-        yield return new WaitForSeconds(10);
-        targetCS.MovementSpeed -= 5;
+        target.MovementSpeed += 5;
+        yield return new WaitForSeconds(duration);
+        target.MovementSpeed -= 5;
+        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (isThrown)
+        {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, 3f);
+            Debug.Log("Potion Crash");
+            foreach (Collider collider  in colliders)
+            {
+                CharacterSuper characterSuper = collider.gameObject.GetComponent<CharacterSuper>();
+                if (characterSuper != null)
+                {
+                    UseEffect(characterSuper);
+                }
+            }
+        }
     }
 }
