@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a34f5d25f6a9da4198c949287eccb74, type: 3}
   m_Name: Recipe_FeatherFall
   m_EditorClassIdentifier: 
-  topSlot: {fileID: 0}
-  middleSlot: {fileID: 0}
-  rightSlot: {fileID: 0}
-  leftSlot: {fileID: 0}
-  bottomSlot: {fileID: 0}
-  product: {fileID: 0}
+  topSlot: {fileID: 11400000, guid: 9a69778c5b93f714eae1be4aadb90a50, type: 2}
+  middleSlot: {fileID: 11400000, guid: 5346ed5beff2c2d48af8d52b8c1eaa04, type: 2}
+  rightSlot: {fileID: 11400000, guid: 9a69778c5b93f714eae1be4aadb90a50, type: 2}
+  leftSlot: {fileID: 11400000, guid: 9a69778c5b93f714eae1be4aadb90a50, type: 2}
+  bottomSlot: {fileID: 11400000, guid: 9a69778c5b93f714eae1be4aadb90a50, type: 2}
+  product: {fileID: 11400000, guid: dbda5c73b9790544d8cf2c7ea9839b59, type: 2}

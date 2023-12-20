@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a34f5d25f6a9da4198c949287eccb74, type: 3}
   m_Name: Recipe_Toughness
   m_EditorClassIdentifier: 
-  topSlot: {fileID: 0}
+  topSlot: {fileID: 11400000, guid: 5346ed5beff2c2d48af8d52b8c1eaa04, type: 2}
   middleSlot: {fileID: 0}
-  rightSlot: {fileID: 0}
+  rightSlot: {fileID: 11400000, guid: d2894cc16e2686042af9c91e66bb9e09, type: 2}
   leftSlot: {fileID: 0}
-  bottomSlot: {fileID: 0}
-  product: {fileID: 0}
+  bottomSlot: {fileID: 11400000, guid: 86f3100513119784bb139f1e5c27c459, type: 2}
+  product: {fileID: 11400000, guid: 9209cb5b47ebcc8459ce76581e1183b3, type: 2}

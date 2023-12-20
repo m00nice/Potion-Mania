@@ -11,7 +11,7 @@ public class Crafting : MonoBehaviour
     [SerializeField] private CraftingSlot rightSlot;
     [SerializeField] private CraftingSlot leftSlot;
     [SerializeField] private CraftingSlot bottomSlot;
-    [SerializeField] private GameObject previewSlot;
+    [SerializeField] private Image previewSlot;
     [SerializeField] private Button craftButton;
     [SerializeField] private RecipeObject[] recipeObjects;
 
@@ -25,14 +25,40 @@ public class Crafting : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         foreach (RecipeObject recipeObject in recipeObjects)
         {
-            if (recipeObject.TopSlot == topSlot.CurrentResource.ResourceSlotGetSet.ResourceObject &&
-                recipeObject.MiddleSlot == middleSlot.CurrentResource.ResourceSlotGetSet.ResourceObject &&
-                recipeObject.RightSlot == rightSlot.CurrentResource.ResourceSlotGetSet.ResourceObject &&
-                recipeObject.LeftSlot == leftSlot.CurrentResource.ResourceSlotGetSet.ResourceObject &&
-                recipeObject.BottomSlot == bottomSlot.CurrentResource.ResourceSlotGetSet.ResourceObject)
+            if (recipeObject.TopSlot?.Equals(topSlot.CurrentResource?.ResourceSlotGetSet.ResourceObject) == true &&
+                recipeObject.MiddleSlot?.Equals(middleSlot.CurrentResource?.ResourceSlotGetSet.ResourceObject) == true &&
+                recipeObject.RightSlot?.Equals(rightSlot.CurrentResource?.ResourceSlotGetSet.ResourceObject) == true &&
+                recipeObject.LeftSlot?.Equals(leftSlot.CurrentResource?.ResourceSlotGetSet.ResourceObject) == true &&
+                recipeObject.BottomSlot?.Equals(bottomSlot.CurrentResource?.ResourceSlotGetSet.ResourceObject) == true)
             {
                 //Set preview to recipeObject.Potion.Sprite
-                //Button function to add that potion
+                previewSlot.sprite = recipeObject.Potion.PotionPrefab.SpriteOfPotion;
+                craftButton.onClick.AddListener(() =>
+                {
+                    recipeObject.Potion.PotionAmount++;
+                    if (topSlot.CurrentResource != null)
+                    {
+                        Destroy(topSlot.CurrentResource.gameObject);
+                    }
+                    if (middleSlot.CurrentResource != null)
+                    {
+                        Destroy(middleSlot.CurrentResource.gameObject);
+                    }
+                    if (rightSlot.CurrentResource != null)
+                    {
+                        Destroy(rightSlot.CurrentResource.gameObject);
+                    }
+                    if (leftSlot.CurrentResource != null)
+                    {
+                        Destroy(leftSlot.CurrentResource.gameObject);
+                    }
+                    if (bottomSlot.CurrentResource != null)
+                    {
+                        Destroy(bottomSlot.CurrentResource.gameObject);
+                    }
+                    
+                    
+                });
             }
         }
     }

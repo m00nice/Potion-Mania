@@ -11,7 +11,7 @@ public class RecipeObject : ScriptableObject
     [SerializeField] [CanBeNull] private ResourceObject rightSlot;
     [SerializeField] [CanBeNull] private ResourceObject leftSlot;
     [SerializeField] [CanBeNull] private ResourceObject bottomSlot;
-    [SerializeField] private Potion product;
+    [SerializeField] private PotionObject potion;
 
     public ResourceObject TopSlot => topSlot;
 
@@ -23,5 +23,5 @@ public class RecipeObject : ScriptableObject
 
     public ResourceObject BottomSlot => bottomSlot;
 
-    public Potion Product => product;
+    public PotionObject Potion => potion;
 }

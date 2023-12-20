@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a34f5d25f6a9da4198c949287eccb74, type: 3}
   m_Name: Recipe_DoubleJump
   m_EditorClassIdentifier: 
-  topSlot: {fileID: 0}
-  middleSlot: {fileID: 0}
-  rightSlot: {fileID: 0}
+  topSlot: {fileID: 11400000, guid: 3a11ca4f28423ac419fe48cbd33d58e6, type: 2}
+  middleSlot: {fileID: 11400000, guid: 3a11ca4f28423ac419fe48cbd33d58e6, type: 2}
+  rightSlot: {fileID: 11400000, guid: 9a69778c5b93f714eae1be4aadb90a50, type: 2}
   leftSlot: {fileID: 0}
-  bottomSlot: {fileID: 0}
-  product: {fileID: 0}
+  bottomSlot: {fileID: 11400000, guid: 86b8398a4f1aba04d958a5febede5420, type: 2}
+  product: {fileID: 11400000, guid: 39242dae95799c7459bc3092621847c7, type: 2}

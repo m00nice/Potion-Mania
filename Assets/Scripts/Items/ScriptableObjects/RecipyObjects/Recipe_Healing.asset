@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a34f5d25f6a9da4198c949287eccb74, type: 3}
   m_Name: Recipe_Healing
   m_EditorClassIdentifier: 
-  topSlot: {fileID: 0}
-  middleSlot: {fileID: 0}
-  rightSlot: {fileID: 0}
-  leftSlot: {fileID: 0}
+  topSlot: {fileID: 11400000, guid: 86f3100513119784bb139f1e5c27c459, type: 2}
+  middleSlot: {fileID: 11400000, guid: 86f3100513119784bb139f1e5c27c459, type: 2}
+  rightSlot: {fileID: 11400000, guid: 86b8398a4f1aba04d958a5febede5420, type: 2}
+  leftSlot: {fileID: 11400000, guid: 86b8398a4f1aba04d958a5febede5420, type: 2}
   bottomSlot: {fileID: 0}
-  product: {fileID: 0}
+  product: {fileID: 11400000, guid: e2321f46c9e656c4eab7aeec44c61342, type: 2}
