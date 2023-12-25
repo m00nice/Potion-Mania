@@ -19,10 +19,14 @@ public class Potion : MonoBehaviour
     [SerializeField] private PotionType potionType;
     [SerializeField] private float duration;
     [SerializeField] private Sprite spriteOfPotion;
+    [SerializeField]private Rigidbody rb;
     private bool isThrown = true;
+    
 
     public Sprite SpriteOfPotion => spriteOfPotion;
 
+    public Rigidbody Rb => rb;
+    
     public void UseEffect(CharacterSuper target)
     {
         if (potionType == PotionType.Pacify)
@@ -59,8 +63,7 @@ public class Potion : MonoBehaviour
     {
         if (potionType == PotionType.Pacify)
         {
-            StartCoroutine(Pacify(target));
-        }
+            StartCoroutine(Pacify(target));}
         else if (potionType == PotionType.Healing)
         {
             Heal(target);
@@ -85,6 +88,7 @@ public class Potion : MonoBehaviour
         {
             //Bomb(target);
         }
+        Destroy(gameObject);
     }
 
     private IEnumerator Pacify(CharacterSuper target)
@@ -117,7 +121,6 @@ public class Potion : MonoBehaviour
     {
         target.CanDoubleJump = true;
         yield return new WaitForSeconds(duration);
-        target.CanDoubleJump = false;
     }
 
     private IEnumerator SpeedBoost(CharacterSuper target)
@@ -131,23 +134,16 @@ public class Potion : MonoBehaviour
     private IEnumerator FeatherFall(CharacterSuper target)
     {
         target.HasFeatherFall = true;
+        target.Gravity = 4f;
         yield return new WaitForSeconds(duration);
         target.HasFeatherFall = false;
+        target.Gravity = 9.8f;
     }
 
     private IEnumerator Bomb(CharacterSuper target)
     {
-        Rigidbody targetRb = target.GetComponent<Rigidbody>();
-        if (targetRb == null)
-        {
-        }
-        else
-        {
-            Vector3 awayFromBomb = (target.transform.position - transform.position).normalized;
-            targetRb.AddForce(awayFromBomb * 10.0f, ForceMode.Impulse);
-            target.CurrentHealth -= 1;
-        }
-
+        target.ApplyKnockBack(transform.position);
+        target.CurrentHealth -= 1;
         target.IsStunned = true;
         yield return new WaitForSeconds(duration);
         target.IsStunned = false;
@@ -155,7 +151,8 @@ public class Potion : MonoBehaviour
 
     private IEnumerator DestroyPotion()
     {
-        yield return new WaitForSeconds(duration);
+        
+        yield return new WaitForSeconds(duration+1);
         Destroy(gameObject);
     }
 
@@ -164,20 +161,18 @@ public class Potion : MonoBehaviour
         if (isThrown)
         {
             Collider[] colliders = Physics.OverlapSphere(transform.position, 3f);
-            Debug.Log("Potion Crash");
             foreach (Collider collider in colliders)
             {
                 CharacterSuper characterSuper = collider.gameObject.GetComponent<CharacterSuper>();
                 if (characterSuper != null)
                 {
-                    Debug.Log(characterSuper);
                     UseEffect(characterSuper);
                 }
             }
 
             isThrown = false;
         }
-
+        
         StartCoroutine(DestroyPotion());
     }
 }

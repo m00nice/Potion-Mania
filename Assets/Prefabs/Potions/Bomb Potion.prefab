@@ -47,8 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   potionType: 6
-  duration: 10
+  duration: 1.5
   spriteOfPotion: {fileID: 21300000, guid: e876c18262964284a8c3c9c977883598, type: 3}
+  rb: {fileID: 1833337447604649116}
 --- !u!54 &1833337447604649116
 Rigidbody:
   m_ObjectHideFlags: 0

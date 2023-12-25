@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Recipe_Toughness
   m_EditorClassIdentifier: 
   topSlot: {fileID: 11400000, guid: 5346ed5beff2c2d48af8d52b8c1eaa04, type: 2}
-  middleSlot: {fileID: 0}
+  middleSlot: {fileID: 11400000, guid: 9b59ed6b8f059d545ac74e9180593651, type: 2}
   rightSlot: {fileID: 11400000, guid: d2894cc16e2686042af9c91e66bb9e09, type: 2}
-  leftSlot: {fileID: 0}
+  leftSlot: {fileID: 11400000, guid: 9b59ed6b8f059d545ac74e9180593651, type: 2}
   bottomSlot: {fileID: 11400000, guid: 86f3100513119784bb139f1e5c27c459, type: 2}
-  product: {fileID: 11400000, guid: 9209cb5b47ebcc8459ce76581e1183b3, type: 2}
+  potion: {fileID: 11400000, guid: 9209cb5b47ebcc8459ce76581e1183b3, type: 2}

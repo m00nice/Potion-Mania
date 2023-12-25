@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233c874a2d01d6e48b41885c7a048845, type: 3}
   m_Name: DoubleJumpPotionObject
   m_EditorClassIdentifier: 
-  potionAmount: 0
+  potionAmount: 86
   potionPrefab: {fileID: 878324465803496458, guid: b938567dd45ca3447963d194788f80ad,
     type: 3}

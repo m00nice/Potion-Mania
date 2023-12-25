@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233c874a2d01d6e48b41885c7a048845, type: 3}
   m_Name: FeatherFallPotionObject
   m_EditorClassIdentifier: 
-  potionAmount: 0
+  potionAmount: 96
   potionPrefab: {fileID: 878324465803496458, guid: 65363405966cb704dad38f13cb3843ae,
     type: 3}

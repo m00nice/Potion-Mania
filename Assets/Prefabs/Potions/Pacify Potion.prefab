@@ -49,6 +49,7 @@ MonoBehaviour:
   potionType: 0
   duration: 15
   spriteOfPotion: {fileID: 21300000, guid: 036777f678fd4424b9978653d19e1e03, type: 3}
+  rb: {fileID: 1833337447604649116}
 --- !u!54 &1833337447604649116
 Rigidbody:
   m_ObjectHideFlags: 0

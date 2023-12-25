@@ -16,5 +16,5 @@ MonoBehaviour:
   middleSlot: {fileID: 11400000, guid: 86f3100513119784bb139f1e5c27c459, type: 2}
   rightSlot: {fileID: 11400000, guid: 86b8398a4f1aba04d958a5febede5420, type: 2}
   leftSlot: {fileID: 11400000, guid: 86b8398a4f1aba04d958a5febede5420, type: 2}
-  bottomSlot: {fileID: 0}
-  product: {fileID: 11400000, guid: e2321f46c9e656c4eab7aeec44c61342, type: 2}
+  bottomSlot: {fileID: 11400000, guid: 9b59ed6b8f059d545ac74e9180593651, type: 2}
+  potion: {fileID: 11400000, guid: e2321f46c9e656c4eab7aeec44c61342, type: 2}

@@ -8,14 +8,20 @@ public class ResourceImage : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
 {
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private RectTransform rectTransform;
-
+    [SerializeField] private ResourceObject resourceObject;
     private ResourceSlot resourceSlot;
     private Canvas canvas;
+    private bool isOneResource;
 
     public ResourceSlot ResourceSlotGetSet
     {
         get => resourceSlot;
         set => resourceSlot = value;
+    }
+    
+    public ResourceObject ResourceObject
+    {
+        get => resourceObject;
     }
 
     public Canvas Canvas
@@ -32,9 +38,12 @@ public class ResourceImage : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
     {
         if (resourceSlot.ResourceObject.Amount > 0)
         {
-            resourceSlot.SubFromAmount(1);
+            
             canvasGroup.blocksRaycasts = false;
             canvasGroup.alpha = 0.7f;
+            if(isOneResource)return;
+            resourceSlot.SubFromAmount(1);
+            isOneResource = true;
         }
         else
         {

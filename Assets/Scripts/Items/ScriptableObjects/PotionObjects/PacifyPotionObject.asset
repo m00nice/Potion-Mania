@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233c874a2d01d6e48b41885c7a048845, type: 3}
   m_Name: PacifyPotionObject
   m_EditorClassIdentifier: 
-  potionAmount: 0
+  potionAmount: 94
   potionPrefab: {fileID: 878324465803496458, guid: c0768e0ebeb90a44a890c4b7b7a4c8b6,
     type: 3}

@@ -7,14 +7,15 @@ public class CharacterSuper : MonoBehaviour
 {
     [SerializeField] protected int maxHealth;
     [SerializeField] protected float movementSpeed;
+    [SerializeField] protected float maxMovementSpeed;
     [SerializeField] protected float jumpForce;
     [SerializeField] protected float airSpeedMultiplier;
     [SerializeField] protected LayerMask ground;
     [SerializeField] protected float playerHeight;
     [SerializeField] protected Animator animator;
     [SerializeField] protected CharacterController characterController;
+    protected Vector3 velocity;
     protected float gravity = 9.8f;
-    protected float fallSpeed;
     protected float rotationSpeed = 7f;
     protected int currentHealth;
     protected bool canJump = true;
@@ -25,6 +26,11 @@ public class CharacterSuper : MonoBehaviour
     protected bool isStunned;
     protected bool isTough;
     protected bool hasFeatherFall;
+    protected bool isKnockingBack;
+    protected float knockBackEffectTimer;
+    protected float knockbackForce = 7f;
+    protected Vector3 knockBackDirection;
+    
     
 
     public int MaxHealth
@@ -87,17 +93,63 @@ public class CharacterSuper : MonoBehaviour
         set => isStunned = value;
     }
 
-    private void FixedUpdate()
+    public float Gravity
     {
-        if (!isGrounded)
+        get => gravity;
+        set => gravity = value;
+    }
+
+    public CharacterController CharacterController => characterController;
+
+    protected virtual void VerticalMovement()
+    {
+        velocity.y -= gravity * Time.deltaTime;
+        
+        characterController.Move(velocity * Time.deltaTime);
+    }
+    
+    protected IEnumerator JumpCooldown()
+    {
+        yield return new WaitForSeconds(jumpCooldown);
+        canJump = true;
+    }
+
+    protected void CheckMovementSpeed()
+    {
+        if (movementSpeed > maxMovementSpeed)
         {
-            fallSpeed += gravity * Time.deltaTime;
+            movementSpeed = maxMovementSpeed;
+        }
+    }
+
+    public void ApplyKnockBack(Vector3 source)
+    {
+        knockBackDirection = -(source - transform.position).normalized;
+        isKnockingBack = true;
+        knockBackEffectTimer = 0f;
+    }
+
+    protected void KnockBack()
+    {
+        knockBackEffectTimer += Time.deltaTime;
+
+        if (knockBackEffectTimer < 1.5f)
+        {
+            float progress = knockBackEffectTimer / 1.5f;
+            Vector3 currentKnockback = Vector3.Lerp(knockBackDirection * knockbackForce, Vector3.zero, progress);
+            characterController.Move(currentKnockback * Time.deltaTime);
         }
         else
         {
-            fallSpeed = 0f;
+            isKnockingBack = false;
         }
+    }
 
-        characterController.Move(Vector3.down * (fallSpeed * Time.deltaTime));
+    protected virtual void Die()
+    {
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

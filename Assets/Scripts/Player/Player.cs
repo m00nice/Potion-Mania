@@ -8,24 +8,15 @@ using UnityEngine;
 public class Player : CharacterSuper
 {
     public static Player Instance;
-    [SerializeField] private Transform playerObject;
     [SerializeField] private Transform orientation;
-    [SerializeField] private Transform camera;
-    [SerializeField] private CinemachineFreeLook freeLook;
-    [SerializeField] private int freeLookXAxis;
-    [SerializeField] private int freeLookYAxis;
     [SerializeField] private PotionObject[] potionObjects;
     [SerializeField] private Transform potionThrowSpawn;
-    [SerializeField] private CinemachineVirtualCamera aimCamera;
-    [SerializeField] private Vector3 throwDirection;
     private PotionObject selectedPotion;
     private float horizontalInput;
     private float verticalInput;
     private Vector3 moveDirection;
-    private float groundDrag = 0.2f;
     private float interactRange = 3f;
     private InteractableObjectSuper interactableObjectSuper;
-    private bool isAiming;
     private bool isCrafting;
     private bool inventoryActive;
 
@@ -41,12 +32,13 @@ public class Player : CharacterSuper
         SelectPotion(true);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        //load file
+        currentHealth = maxHealth;
         StartCoroutine(GetClosestInteractableObject());
     }
-
+    
     private void Update()
     {
+        Die();
         if (Input.GetKeyDown(KeyCode.I))
         {
             if (!Inventory.Instance.IsActive)
@@ -54,11 +46,6 @@ public class Player : CharacterSuper
                 Inventory.Instance.OpenInventory();
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
-                freeLook.m_YAxis.m_MaxSpeed = 0;
-                freeLook.m_XAxis.m_MaxSpeed = 0;
-                freeLook.gameObject.SetActive(true);
-                aimCamera.gameObject.SetActive(false);
-                isAiming = false;
                 inventoryActive = true;
             }
             else
@@ -66,13 +53,12 @@ public class Player : CharacterSuper
                 Inventory.Instance.CloseInventory();
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
-                freeLook.m_YAxis.m_MaxSpeed = freeLookYAxis;
-                freeLook.m_XAxis.m_MaxSpeed = freeLookXAxis;
                 inventoryActive = false;
             }
         }
-
+        
         isGrounded = Physics.Raycast(orientation.position, Vector3.down, playerHeight * 0.5f + 0.2f, ground);
+        
         if (isGrounded)
         {
             animator.SetBool("isGrounded", true);
@@ -84,27 +70,17 @@ public class Player : CharacterSuper
             animator.SetBool("isGrounded", false);
             animator.SetBool("isFalling", true);
         }
-        
-        if(inventoryActive)return;
-        if(isStunned)return;
+        if (inventoryActive) return;
+        VerticalMovement();
+        KnockBack();
+        if (isStunned) return;
 
-        CameraRotation();
-
-        Aim();
-
+        CheckMovementSpeed();
         Move();
-
-        if (Input.GetAxis("Jump") != 0 && isGrounded && canJump)
+        
+        if (!canJump)
         {
-            Jump();
-            if (canDoubleJump)
-            {
-                canDoubleJump = false;
-                return;
-            }
-
-            canJump = false;
-            StartCoroutine(JumpCooldown());
+            animator.SetBool("isJumping", true);
         }
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -126,93 +102,56 @@ public class Player : CharacterSuper
             //switch potion down
             SelectPotion(false);
         }
-
-        if (Input.GetKey(KeyCode.Mouse1))
-        {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                ThrowPotion();
-            }
-        }
-
+        
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Melee();
+            ThrowPotion();
         }
-
+        
         if (Input.GetKey(KeyCode.Q))
         {
             UsePotion();
         }
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            knockbackForce = 14f;
+            if (other.transform.parent == null)
+            {
+                ApplyKnockBack(other.transform.position);
+                TakeDamage(1);
+            }
+            else
+            {
+                ApplyKnockBack(other.transform.parent.position);
+                TakeDamage(1);
+            }
+            knockbackForce = 7f;
+            
+        }
     }
 
     //PLAYER STATS METHODS
-
-    private void SetPlayerStats(int health)
-    {
-        maxHealth = health;
-        currentHealth = maxHealth;
-    }
-
+    
     private void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        if (isTough)
+        {
+            currentHealth++;
+        }
     }
 
-    private void Die()
+    protected override void Die()
     {
         if (currentHealth <= 0)
         {
-            //DIE
-        }
-    }
-
-    //PLAYER CAMERA METHODS
-
-    private void CameraRotation()
-    {
-        if (isAiming)
-        {
-            
-        }
-        else
-        {
-            
-            
-            Vector3 viewDirection = transform.position - new Vector3(camera.transform.position.x, transform.position.y, camera.transform.position.z);
-            orientation.forward = viewDirection.normalized;
-
-            horizontalInput = Input.GetAxis("Horizontal");
-            verticalInput = Input.GetAxis("Vertical");
-            Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-            if (inputDirection != Vector3.zero)
-            {
-                playerObject.forward = Vector3.Slerp(playerObject.forward, inputDirection.normalized, Time.deltaTime * rotationSpeed);
-            }
-            
-        }
-    }
-
-    private void Aim()
-    {
-        if (Input.GetKey(KeyCode.Mouse1))
-        {
-            Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
-            Ray ray = Camera.main.ScreenPointToRay(screenCenter);
-            Vector3 lookDirection = (ray.direction).normalized;
-            Quaternion toRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, Time.deltaTime * rotationSpeed);
-
-            freeLook.gameObject.SetActive(false);
-            aimCamera.gameObject.SetActive(true);
-            isAiming = true;
-        }
-        else
-        {
-            freeLook.gameObject.SetActive(true);
-            aimCamera.gameObject.SetActive(false);
-            isAiming = false;
+            //Show game over screen
+            Destroy(gameObject);
         }
     }
 
@@ -229,61 +168,44 @@ public class Player : CharacterSuper
         else
         {
             Vector3 movementDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput);
-
-            characterController.Move(movementDirection * (movementSpeed * Time.deltaTime));
-
-            if (movementDirection != Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(movementDirection, Vector3.up);
-            }
-            
-            /*
-            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-            rb.AddForce(moveDirection.normalized * movementSpeed, ForceMode.Force);
-
-            Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-            if (flatVelocity.magnitude > movementSpeed)
-            {
-                Vector3 limitedVelocity = flatVelocity.normalized * movementSpeed;
-                rb.velocity = new Vector3(limitedVelocity.x, rb.velocity.y, limitedVelocity.z);
-            }
-            */
             if (isGrounded)
             {
+                characterController.Move(movementDirection * (movementSpeed * Time.deltaTime));
                 animator.SetBool("isMoving", true);
             }
             else
             {
+                characterController.Move(movementDirection * (movementSpeed * airSpeedMultiplier * Time.deltaTime));
                 animator.SetBool("isMoving", false);
             }
-            
         }
     }
-
-    private void Jump()
+    
+    protected override void VerticalMovement()
     {
+        if (Input.GetButtonDown("Jump") && isGrounded && canJump)
+        {
+            velocity.y = jumpForce;
+            canJump = false;
+            StartCoroutine(JumpCooldown());
+        }
+        else if (Input.GetButtonDown("Jump") && !isGrounded && canJump && canDoubleJump)
+        {
+            velocity.y = jumpForce;
+            canJump = false;
+            canDoubleJump = false;
+            StartCoroutine(JumpCooldown());
+        }
+        else
+        {
+            velocity.y -= gravity * Time.deltaTime;
+            if (velocity.y < -gravity)
+            {
+                velocity.y = -gravity;
+            }
+        }
         
-        animator.SetBool("isJumping", true);
-        
-    }
-
-    private IEnumerator JumpCooldown()
-    {
-        yield return new WaitForSeconds(jumpCooldown);
-        canJump = true;
-    }
-
-
-    private void Melee()
-    {
-        if (isPassiv) return;
-    }
-
-    private void KnockBack()
-    {
-        if (isTough) return;
+        characterController.Move(velocity * Time.deltaTime);
     }
 
     //PLAYER POTION METHODS
@@ -292,7 +214,8 @@ public class Player : CharacterSuper
     {
         if (selectedPotion.PotionAmount > 0)
         {
-            selectedPotion.PotionPrefab.DrinkEffect(this);
+            Potion drinkPotion = Instantiate(selectedPotion.PotionPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            drinkPotion.DrinkEffect(this);
         }
     }
 
@@ -308,33 +231,25 @@ public class Player : CharacterSuper
             {
                 Vector3 throwDirection = (hit.point - potionThrowSpawn.position).normalized;
                 Potion thrownPotion = Instantiate(selectedPotion.PotionPrefab, potionThrowSpawn.position, Quaternion.identity);
-                Rigidbody potionRb = thrownPotion.GetComponent<Rigidbody>();
+                Rigidbody potionRb = thrownPotion.Rb;
                 if (potionRb != null)
                 {
                     potionRb.AddForce(throwDirection * 30f, ForceMode.Impulse);
-                    Debug.Log("throw");
                 }
             }
             else
             {
                 Vector3 throwDirection = (ray.direction).normalized;
                 Potion thrownPotion = Instantiate(selectedPotion.PotionPrefab, potionThrowSpawn.position, Quaternion.identity);
-                Rigidbody potionRb = thrownPotion.GetComponent<Rigidbody>();
+                Rigidbody potionRb = thrownPotion.Rb;
                 if (potionRb != null)
                 {
                     potionRb.AddForce(throwDirection * 30f, ForceMode.Impulse);
-                    Debug.Log("throw");
                 }
             }
 
             selectedPotion.PotionAmount--;
         }
-        else
-        {
-            Melee();
-        }
-        
-        
     }
 
     private void SelectPotion(bool up)
@@ -380,7 +295,7 @@ public class Player : CharacterSuper
             Collider[] colliders = Physics.OverlapSphere(transform.position, interactRange);
             if (colliders.Length > 0)
             {
-                GameObject? closestObject = colliders
+                GameObject closestObject = colliders
                     .Where(collider => collider.gameObject != null && collider.gameObject != gameObject)
                     .Where(collider => collider.GetComponent<InteractableObjectSuper>() != null)
                     .OrderBy(collider => Vector3.Distance(transform.position, collider.transform.position))
@@ -388,7 +303,7 @@ public class Player : CharacterSuper
                     .FirstOrDefault();
                 if (closestObject != null)
                 {
-                    InteractableObjectSuper? closestInteractableObject = closestObject.GetComponent<InteractableObjectSuper>();
+                    InteractableObjectSuper closestInteractableObject = closestObject.GetComponent<InteractableObjectSuper>();
 
                     if (closestInteractableObject != null)
                     {

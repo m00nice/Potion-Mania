@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233c874a2d01d6e48b41885c7a048845, type: 3}
   m_Name: SpeedBoostPotionObject
   m_EditorClassIdentifier: 
-  potionAmount: 0
+  potionAmount: 94
   potionPrefab: {fileID: 878324465803496458, guid: a41f1db54f093e247ba35f99ce3a393c,
     type: 3}
