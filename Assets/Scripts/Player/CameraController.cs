@@ -18,6 +18,7 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (Player.Instance.InventoryActive)return;
         followTarget.localEulerAngles = new Vector3(-yAxis.Value, followTarget.localEulerAngles.y, followTarget.localEulerAngles.z);
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, xAxis.Value, transform.eulerAngles.z);
     }

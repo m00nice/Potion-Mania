@@ -19,8 +19,10 @@ public class Player : CharacterSuper
     private InteractableObjectSuper interactableObjectSuper;
     private bool isCrafting;
     private bool inventoryActive;
+    private bool isDrinking;
 
     public PotionObject SelectedPotion => selectedPotion;
+    public bool InventoryActive => inventoryActive;
 
     private void Awake()
     {
@@ -134,6 +136,7 @@ public class Player : CharacterSuper
             
         }
     }
+    
 
     //PLAYER STATS METHODS
     
@@ -151,7 +154,8 @@ public class Player : CharacterSuper
         if (currentHealth <= 0)
         {
             //Show game over screen
-            Destroy(gameObject);
+            transform.position = new Vector3(0, 0, 0);
+            currentHealth = maxHealth;
         }
     }
 
@@ -168,6 +172,7 @@ public class Player : CharacterSuper
         else
         {
             Vector3 movementDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput);
+            
             if (isGrounded)
             {
                 characterController.Move(movementDirection * (movementSpeed * Time.deltaTime));
@@ -212,10 +217,14 @@ public class Player : CharacterSuper
 
     private void UsePotion()
     {
+        if(isDrinking)return;
         if (selectedPotion.PotionAmount > 0)
         {
             Potion drinkPotion = Instantiate(selectedPotion.PotionPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             drinkPotion.DrinkEffect(this);
+            selectedPotion.PotionAmount--;
+            isDrinking = true;
+            StartCoroutine(DrinkingCooldown());
         }
     }
 
@@ -285,6 +294,12 @@ public class Player : CharacterSuper
         {
             selectedPotion = potionObjects[0];
         }
+    }
+
+    private IEnumerator DrinkingCooldown()
+    {
+        yield return new WaitForSeconds(0.2f);
+        isDrinking = false;
     }
 
     private IEnumerator GetClosestInteractableObject()

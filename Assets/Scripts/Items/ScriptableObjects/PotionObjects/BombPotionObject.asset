@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233c874a2d01d6e48b41885c7a048845, type: 3}
   m_Name: BombPotionObject
   m_EditorClassIdentifier: 
-  potionAmount: 90
+  potionAmount: 0
   potionPrefab: {fileID: 878324465803496458, guid: 10d8ceb665541c94ab20fe106580ab5a,
     type: 3}

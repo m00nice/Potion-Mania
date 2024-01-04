@@ -26,6 +26,10 @@ public class Equipped : MonoBehaviour
                 potionAmountText.text = currentPotionObject.PotionAmount.ToString();
                 imagePotion.sprite = currentPotionObject.PotionPrefab.SpriteOfPotion;
             }
+            else if(currentPotionObject != null)
+            {
+                potionAmountText.text = currentPotionObject.PotionAmount.ToString();
+            }
         }
     }
 }
