@@ -50,6 +50,8 @@ MonoBehaviour:
   duration: 10
   spriteOfPotion: {fileID: 21300000, guid: 23cffbf7d94dd8642b3212e19b013fe9, type: 3}
   rb: {fileID: 1833337447604649116}
+  sphere: {fileID: 8836579983665181999}
+  cylinder: {fileID: 6559474579283223478}
 --- !u!54 &1833337447604649116
 Rigidbody:
   m_ObjectHideFlags: 0

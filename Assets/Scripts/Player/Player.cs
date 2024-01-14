@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class Player : CharacterSuper
 {
@@ -37,7 +38,7 @@ public class Player : CharacterSuper
         currentHealth = maxHealth;
         StartCoroutine(GetClosestInteractableObject());
     }
-    
+
     private void Update()
     {
         Die();
@@ -49,6 +50,7 @@ public class Player : CharacterSuper
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
                 inventoryActive = true;
+                CameraController.Instance.IsAiming = false;
             }
             else
             {
@@ -58,9 +60,9 @@ public class Player : CharacterSuper
                 inventoryActive = false;
             }
         }
-        
+
         isGrounded = Physics.Raycast(orientation.position, Vector3.down, playerHeight * 0.5f + 0.2f, ground);
-        
+
         if (isGrounded)
         {
             animator.SetBool("isGrounded", true);
@@ -72,14 +74,30 @@ public class Player : CharacterSuper
             animator.SetBool("isGrounded", false);
             animator.SetBool("isFalling", true);
         }
+
         if (inventoryActive) return;
+        
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            if (!CameraController.Instance.IsAiming)
+            {
+                Vector3 viewDirection = orientation.forward.normalized;
+                transform.forward = viewDirection;
+            }
+            CameraController.Instance.IsAiming = true;
+        }
+        else
+        {
+            CameraController.Instance.IsAiming = false;
+        }
+
         VerticalMovement();
         KnockBack();
         if (isStunned) return;
 
         CheckMovementSpeed();
         Move();
-        
+
         if (!canJump)
         {
             animator.SetBool("isJumping", true);
@@ -104,17 +122,16 @@ public class Player : CharacterSuper
             //switch potion down
             SelectPotion(false);
         }
-        
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             ThrowPotion();
         }
-        
+
         if (Input.GetKey(KeyCode.Q))
         {
             UsePotion();
         }
-        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -132,14 +149,14 @@ public class Player : CharacterSuper
                 ApplyKnockBack(other.transform.parent.position);
                 TakeDamage(1);
             }
+
             knockbackForce = 7f;
-            
         }
     }
-    
+
 
     //PLAYER STATS METHODS
-    
+
     private void TakeDamage(int damage)
     {
         currentHealth -= damage;
@@ -171,21 +188,39 @@ public class Player : CharacterSuper
         }
         else
         {
-            Vector3 movementDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput);
-            
-            if (isGrounded)
+            if (CameraController.Instance.IsAiming)
             {
-                characterController.Move(movementDirection * (movementSpeed * Time.deltaTime));
-                animator.SetBool("isMoving", true);
+                Vector3 movementDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput);
+
+                if (isGrounded)
+                {
+                    characterController.Move(movementDirection * (movementSpeed * Time.deltaTime));
+                    animator.SetBool("isMoving", true);
+                }
+                else
+                {
+                    characterController.Move(movementDirection * (movementSpeed * airSpeedMultiplier * Time.deltaTime));
+                    animator.SetBool("isMoving", false);
+                }
             }
             else
             {
-                characterController.Move(movementDirection * (movementSpeed * airSpeedMultiplier * Time.deltaTime));
-                animator.SetBool("isMoving", false);
+                Vector3 movementDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput);
+                transform.forward = Vector3.Slerp(transform.forward, movementDirection.normalized, Time.deltaTime * 7f);
+                if (isGrounded)
+                {
+                    characterController.Move(movementDirection * (movementSpeed * Time.deltaTime));
+                    animator.SetBool("isMoving", true);
+                }
+                else
+                {
+                    characterController.Move(movementDirection * (movementSpeed * airSpeedMultiplier * Time.deltaTime));
+                    animator.SetBool("isMoving", false);
+                }
             }
         }
     }
-    
+
     protected override void VerticalMovement()
     {
         if (Input.GetButtonDown("Jump") && isGrounded && canJump)
@@ -209,7 +244,7 @@ public class Player : CharacterSuper
                 velocity.y = -gravity;
             }
         }
-        
+
         characterController.Move(velocity * Time.deltaTime);
     }
 
@@ -217,7 +252,7 @@ public class Player : CharacterSuper
 
     private void UsePotion()
     {
-        if(isDrinking)return;
+        if (isDrinking) return;
         if (selectedPotion.PotionAmount > 0)
         {
             Potion drinkPotion = Instantiate(selectedPotion.PotionPrefab, new Vector3(0, 0, 0), Quaternion.identity);

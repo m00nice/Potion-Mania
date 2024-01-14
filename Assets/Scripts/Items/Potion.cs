@@ -19,7 +19,10 @@ public class Potion : MonoBehaviour
     [SerializeField] private PotionType potionType;
     [SerializeField] private float duration;
     [SerializeField] private Sprite spriteOfPotion;
-    [SerializeField]private Rigidbody rb;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private GameObject sphere;
+    [SerializeField] private GameObject cylinder;
+    
     private bool isThrown = true;
     
 
@@ -169,7 +172,8 @@ public class Potion : MonoBehaviour
                     UseEffect(characterSuper);
                 }
             }
-
+            sphere.SetActive(false);
+            cylinder.SetActive(false);
             isThrown = false;
         }
         
